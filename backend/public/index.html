@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0A0C10" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>TaskFlow • Intelligent Task Orchestrator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0A0C10;
+      --card: #12151D;
+      --card-elevated: #181C26;
+      --card-hover: #1E2330;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(255, 255, 255, 0.35);
+
+      /* Executive High-Contrast Action (Linear / Vercel monochrome standard) */
+      --btn-primary-bg: #FFFFFF;
+      --btn-primary-text: #090A0E;
+      --btn-primary-hover: #F1F5F9;
+
+      /* Professional Precision Cobalt for subtle focus/tabs */
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-muted: rgba(37, 99, 235, 0.12);
+
+      --text: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      
+      --rose: #E11D48;
+      --rose-bg: rgba(225, 29, 72, 0.12);
+      --orange: #EA580C;
+      --orange-bg: rgba(234, 88, 12, 0.12);
+      --amber: #D97706;
+      --amber-bg: rgba(217, 119, 6, 0.12);
+      --emerald: #10B981;
+      --emerald-bg: rgba(16, 185, 129, 0.12);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      background-image: none;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 48px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1040px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ─── Navigation Header ─── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #2563EB;
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-mark svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: #FFFFFF;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card-elevated);
+      padding: 5px 12px 5px 6px;
+      border-radius: 30px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #222634;
+      color: #F8FAFC;
+      border: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .user-email {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: 2px;
+    }
+
+    /* ─── Buttons ─── */
+    .btn {
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      padding: 9px 16px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background: #2563EB;
+      color: #FFFFFF;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+    .btn-primary:hover {
+      background: #1D4ED8;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+      color: #FFFFFF;
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+    .btn-ghost:hover {
+      background: var(--card-elevated);
+      color: var(--text);
+    }
+
+    .btn-danger-ghost {
+      background: transparent;
+      color: var(--rose);
+      border-color: rgba(244, 63, 94, 0.25);
+    }
+    .btn-danger-ghost:hover {
+      background: var(--rose-bg);
+    }
+
+    /* ─── Metrics / Progress Bar ─── */
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 680px) {
+      .metrics-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .metric-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .metric-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .metric-value {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    /* ─── Main Two-Column Layout & Workspace Tabs ─── */
+    /* ─── Main Workspace & Panels ─── */
+    .workspace-tabs-bar {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 860px) {
+      .workspace-tabs-bar {
+        display: flex;
+      }
+    }
+
+    .ws-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .ws-tab-btn:hover {
+      background: var(--card-elevated);
+      color: var(--text);
+    }
+    .ws-tab-btn.active {
+      background: #2563EB;
+      color: #FFFFFF;
+      border-color: #3B82F6;
+    }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 370px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .workspace-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+
+    /* Refined Task Composer Panel */
+    .composer-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top: 3px solid #2563EB;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .composer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .composer-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .composer-header-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60A5FA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .composer-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+    }
+
+    .composer-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .composer-badge {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--card-elevated);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .panel-caption {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ─── Form Elements ─── */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .input-control {
+      width: 100%;
+      background: var(--card-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .input-control:focus {
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+    }
+
+    .input-control::placeholder {
+      color: var(--text-muted);
+      opacity: 0.8;
+    }
+
+    textarea.input-control {
+      resize: vertical;
+      min-height: 68px;
+    }
+
+    /* Segmented Priority Control */
+    .priority-segmented {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      background: #0B0E14;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .priority-btn {
+      font-family: inherit;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 7px 0;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .priority-btn .dot {
+      width: 6.5px;
+      height: 6.5px;
+      border-radius: 50%;
+    }
+
+    .priority-btn-low .dot { background: #10B981; }
+    .priority-btn-low:hover { background: rgba(16, 185, 129, 0.1); color: #6EE7B7; }
+
+    .priority-btn-medium .dot { background: #F59E0B; }
+    .priority-btn-medium:hover { background: rgba(245, 158, 11, 0.1); color: #FCD34D; }
+
+    .priority-btn-high .dot { background: #F97316; }
+    .priority-btn-high:hover { background: rgba(249, 115, 22, 0.1); color: #FDBA74; }
+
+    .priority-btn-urgent .dot { background: #EF4444; }
+    .priority-btn-urgent:hover { background: rgba(239, 68, 68, 0.1); color: #FDA4AF; }
+
+    /* Active Selected States (Clean & Modern) */
+    .priority-btn.active-urgent {
+      background: rgba(239, 68, 68, 0.18) !important;
+      border-color: rgba(239, 68, 68, 0.5) !important;
+      color: #FECDD3 !important;
+      font-weight: 700;
+    }
+    .priority-btn.active-urgent .dot { background: #EF4444; }
+
+    .priority-btn.active-high {
+      background: rgba(249, 115, 22, 0.18) !important;
+      border-color: rgba(249, 115, 22, 0.5) !important;
+      color: #FED7AA !important;
+      font-weight: 700;
+    }
+    .priority-btn.active-high .dot { background: #F97316; }
+
+    .priority-btn.active-medium {
+      background: rgba(245, 158, 11, 0.18) !important;
+      border-color: rgba(245, 158, 11, 0.5) !important;
+      color: #FDE68A !important;
+      font-weight: 700;
+    }
+    .priority-btn.active-medium .dot { background: #F59E0B; }
+
+    .priority-btn.active-low {
+      background: rgba(16, 185, 129, 0.18) !important;
+      border-color: rgba(16, 185, 129, 0.5) !important;
+      color: #A7F3D0 !important;
+      font-weight: 700;
+    }
+    .priority-btn.active-low .dot { background: #10B981; }
+
+    .btn-submit-task {
+      width: 100%;
+      margin-top: 16px;
+      padding: 11px 16px;
+      font-size: 13.5px;
+      font-weight: 600;
+      background: #2563EB;
+      color: #FFFFFF;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-submit-task:hover {
+      background: #1D4ED8;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5);
+      transform: translateY(-1px);
+    }
+    .btn-submit-task svg {
+      stroke: #FFFFFF;
+    }
+
+    /* ─── Task List & Feed ─── */
+    .filter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .segmented-tabs {
+      display: flex;
+      background: var(--card-elevated);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .tab-btn.active {
+      background: #2563EB;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    }
+
+    .sort-dropdown-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .sort-select {
+      background: var(--card-elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .task-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 200px;
+    }
+
+    .task-card {
+      background: var(--card-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: border-color 0.15s, transform 0.15s, background-color 0.15s;
+    }
+
+    .task-card:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+      background: var(--card-hover);
+      transform: translateY(-1px);
+    }
+
+    .task-card.completed {
+      opacity: 0.55;
+      background: rgba(19, 22, 32, 0.5);
+    }
+
+    .check-circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-top: 1px;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    .check-circle:hover {
+      border-color: var(--emerald);
+      transform: scale(1.08);
+    }
+
+    .check-circle.checked {
+      background: var(--emerald);
+      border-color: var(--emerald);
+    }
+
+    .check-circle svg {
+      width: 11px;
+      height: 11px;
+      stroke: white;
+      stroke-width: 3;
+      fill: none;
+      display: none;
+    }
+
+    .check-circle.checked svg {
+      display: block;
+    }
+
+    .task-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .task-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .task-title.strikethrough {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .task-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+
+    .task-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5.5px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 6px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .pill-badge .dot {
+      width: 6.5px;
+      height: 6.5px;
+      border-radius: 50%;
+    }
+
+    /* URGENT: Deep Ruby Crimson with Border & Red Glow */
+    .pill-urgent {
+      background: rgba(225, 29, 72, 0.22);
+      border: 1.5px solid #F43F5E;
+      color: #FFE4E6;
+      box-shadow: 0 0 10px rgba(225, 29, 72, 0.35);
+    }
+    .pill-urgent .dot {
+      background: #F43F5E;
+      box-shadow: 0 0 6px #F43F5E;
+    }
+
+    /* HIGH: Vivid Tangerine Orange with Border & Glow */
+    .pill-high {
+      background: rgba(234, 88, 12, 0.22);
+      border: 1.5px solid #FB923C;
+      color: #FFEDD5;
+      box-shadow: 0 0 10px rgba(234, 88, 12, 0.35);
+    }
+    .pill-high .dot {
+      background: #FB923C;
+      box-shadow: 0 0 6px #FB923C;
+    }
+
+    /* MEDIUM: Warm Golden Amber with Border & Glow */
+    .pill-medium {
+      background: rgba(217, 119, 6, 0.22);
+      border: 1.5px solid #FBBF24;
+      color: #FEF3C7;
+      box-shadow: 0 0 10px rgba(217, 119, 6, 0.35);
+    }
+    .pill-medium .dot {
+      background: #FBBF24;
+      box-shadow: 0 0 6px #FBBF24;
+    }
+
+    /* LOW: Fresh Mint Emerald with Border & Glow */
+    .pill-low {
+      background: rgba(16, 185, 129, 0.22);
+      border: 1.5px solid #34D399;
+      color: #D1FAE5;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+    }
+    .pill-low .dot {
+      background: #34D399;
+      box-shadow: 0 0 6px #34D399;
+    }
+
+    .pill-deadline {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .pill-deadline.overdue {
+      background: var(--rose-bg);
+      border-color: rgba(244, 63, 94, 0.3);
+      color: var(--rose);
+      font-weight: 700;
+    }
+
+    .pill-category {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .delete-action {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.6;
+      transition: opacity 0.15s, color 0.15s;
+    }
+
+    .delete-action:hover {
+      opacity: 1;
+      color: var(--rose);
+      background: var(--rose-bg);
+    }
+
+    .empty-state {
+      padding: 48px 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .empty-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--card-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+      color: var(--text-muted);
+    }
+
+    .empty-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .empty-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      max-width: 260px;
+    }
+
+    /* ─── Auth Landing Container ─── */
+    .auth-container {
+      max-width: 440px;
+      margin: 40px auto 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 32px 28px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .auth-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .auth-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .auth-segmented {
+      display: flex;
+      background: var(--card-elevated);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .auth-segmented button {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 0;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .auth-segmented button.active {
+      background: #2563EB;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Navbar -->
+    <nav>
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <div>
+          <div class="brand-title">TaskFlow</div>
+          <div class="brand-subtitle">Personal Task & Urgency Manager</div>
+        </div>
+      </div>
+
+      <div class="nav-actions" id="navAuthArea">
+        <div class="user-profile" id="userBadge" style="display:none;">
+          <div class="avatar" id="userAvatar">U</div>
+          <div>
+            <span class="user-name" id="navUserName">User</span>
+            <span class="user-email" id="navUserEmail"></span>
+          </div>
+        </div>
+        <button id="navSignOutBtn" class="btn btn-danger-ghost" style="display:none;" onclick="logout()">
+          Sign Out
+        </button>
+      </div>
+    </nav>
+
+    <!-- AUTHENTICATION CARD (Displayed when logged out) -->
+    <div id="authPanel" class="auth-container">
+      <div class="auth-header">
+        <h2 id="authCardTitle">Sign In to TaskFlow</h2>
+        <p>Access your personal workspace and task priorities</p>
+      </div>
+
+      <div class="auth-segmented">
+        <button id="authTabSignIn" class="active" onclick="switchAuthMode('login')">Sign In</button>
+        <button id="authTabSignUp" onclick="switchAuthMode('register')">Create Account</button>
+      </div>
+
+      <form id="authForm" onsubmit="handleAuthSubmit(event)">
+        <div class="form-group" id="nameGroup" style="display:none;">
+          <label class="form-label">Your Name</label>
+          <input id="authName" class="input-control" placeholder="e.g. Muskan" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input id="authEmail" class="input-control" type="email" placeholder="you@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input id="authPassword" class="input-control" type="password" placeholder="••••••••" minlength="6" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 6px;" id="authSubmitBtn">
+          Sign In
+        </button>
+      </form>
+
+      <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); text-align: center;">
+        <button class="btn btn-ghost" style="width:100%; font-size: 12px;" onclick="loadDemoAccount()">
+          ⚡ Quick Demo Account (1-Click)
+        </button>
+      </div>
+    </div>
+
+    <!-- LOGGED-IN WORKSPACE -->
+    <div id="workspacePanel" style="display:none; flex-direction: column; gap: 20px;">
+      <!-- Metrics Bar -->
+      <div class="metrics-bar">
+        <div class="metric-card">
+          <span class="metric-title">Total Tasks</span>
+          <span class="metric-value" id="statTotal" style="color: var(--text);">0</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-title">Completed</span>
+          <span class="metric-value" id="statCompleted" style="color: var(--emerald);">0</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-title">Pending</span>
+          <span class="metric-value" id="statPending" style="color: #38BDF8;">0</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-title">Urgent / Overdue</span>
+          <span class="metric-value" id="statUrgent" style="color: var(--rose);">0</span>
+        </div>
+      </div>
+
+      <!-- Workspace Navigation Tabs (Mobile Only) -->
+      <div class="workspace-tabs-bar">
+        <button type="button" class="ws-tab-btn active" id="wsTabCreate" onclick="switchWorkspaceView('create')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span class="ws-tab-label">Create Task</span>
+        </button>
+        <button type="button" class="ws-tab-btn" id="wsTabFeed" onclick="switchWorkspaceView('feed')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+          <span class="ws-tab-label">Task Feed</span>
+          <span class="ws-tab-badge" id="wsTaskCountBadge">0</span>
+        </button>
+      </div>
+
+      <!-- Two-Column Workspace -->
+      <div class="workspace-grid">
+        <!-- Left: Task Composer (Create Task Panel) -->
+        <div class="panel composer-panel" id="composerPanel">
+          <div class="composer-header">
+            <div class="composer-header-left">
+              <span class="composer-header-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+              <div>
+                <div class="composer-title">Create Task</div>
+                <div class="composer-subtitle">Smart Urgency &amp; Priority Mix</div>
+              </div>
+            </div>
+            <span class="composer-badge">Personal</span>
+          </div>
+
+          <form id="createTaskForm" onsubmit="handleCreateTask(event)">
+            <div class="form-group">
+              <label class="form-label">Title</label>
+              <input id="newTaskTitle" class="input-control" placeholder="What needs to get done?" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Notes</label>
+              <textarea id="newTaskDesc" class="input-control" placeholder="Context, links, or subtasks (optional)"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Priority</label>
+              <div class="priority-segmented">
+                <button type="button" class="priority-btn priority-btn-low" onclick="setFormPriority('LOW')">
+                  <span class="dot"></span>Low
+                </button>
+                <button type="button" class="priority-btn priority-btn-medium active-medium" onclick="setFormPriority('MEDIUM')">
+                  <span class="dot"></span>Med
+                </button>
+                <button type="button" class="priority-btn priority-btn-high" onclick="setFormPriority('HIGH')">
+                  <span class="dot"></span>High
+                </button>
+                <button type="button" class="priority-btn priority-btn-urgent" onclick="setFormPriority('URGENT')">
+                  <span class="dot"></span>Urgent
+                </button>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select id="newTaskCategory" class="input-control">
+                  <option value="Work">Work</option>
+                  <option value="Study">Study</option>
+                  <option value="Personal">Personal</option>
+                  <option value="Health">Health</option>
+                  <option value="General">General</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Cutoff Deadline</label>
+                <input id="newTaskDeadline" class="input-control" type="datetime-local" />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-submit-task">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Create Task</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Task Feed & Filters -->
+        <div class="panel" id="feedPanel">
+          <div class="filter-row">
+            <!-- Status Tabs -->
+            <div class="segmented-tabs">
+              <button class="tab-btn active" id="filterTabAll" onclick="setFilterStatus('ALL')">All</button>
+              <button class="tab-btn" id="filterTabPending" onclick="setFilterStatus('PENDING')">Active</button>
+              <button class="tab-btn" id="filterTabCompleted" onclick="setFilterStatus('COMPLETED')">Done</button>
+            </div>
+
+            <!-- Sorting Switcher -->
+            <div class="sort-dropdown-wrap">
+              <span>Sort:</span>
+              <select id="sortSelector" class="sort-select" onchange="handleSortChange(this.value)">
+                <option value="smart" selected>Smart Urgency Mix</option>
+                <option value="deadline">Closest Deadline</option>
+                <option value="priority">Priority Level</option>
+                <option value="newest">Recently Created</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Task Cards List -->
+          <div class="task-stack" id="taskListContainer">
+            <div class="empty-state">
+              <div class="empty-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
+              <div class="empty-title">No tasks found</div>
+              <div class="empty-desc">Create your first task on the left to start tracking with Smart Urgency Mix.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let token = localStorage.getItem('token') || '';
+    let activeAuthMode = 'login'; // 'login' | 'register'
+    let currentFilter = 'ALL';
+    let currentSort = 'smart';
+    let formPriority = 'MEDIUM';
+
+    // ─── Auth Mode Toggling ───
+    function switchAuthMode(mode) {
+      activeAuthMode = mode;
+      const isLogin = mode === 'login';
+      document.getElementById('authTabSignIn').classList.toggle('active', isLogin);
+      document.getElementById('authTabSignUp').classList.toggle('active', !isLogin);
+      document.getElementById('nameGroup').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('authCardTitle').innerText = isLogin ? 'Sign In to TaskFlow' : 'Create Your Account';
+      document.getElementById('authSubmitBtn').innerText = isLogin ? 'Sign In' : 'Create Account';
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value;
+
+      if (activeAuthMode === 'login') {
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+          if (data.success && data.token) {
+            loginSuccess(data.user, data.token);
+          } else {
+            alert(data.message || 'Invalid credentials');
+          }
+        } catch (err) {
+          alert('Network error connecting to API');
+        }
+      } else {
+        const name = document.getElementById('authName').value.trim();
+        if (!name) return alert('Please enter your name');
+        try {
+          const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+          });
+          const data = await res.json();
+          if (data.success && data.token) {
+            loginSuccess(data.user, data.token);
+          } else {
+            alert(data.message || 'Registration failed');
+          }
+        } catch (err) {
+          alert('Network error connecting to API');
+        }
+      }
+    }
+
+    function loadDemoAccount() {
+      document.getElementById('authEmail').value = 'evaluator@example.com';
+      document.getElementById('authPassword').value = 'password123';
+      switchAuthMode('login');
+      handleAuthSubmit(new Event('submit'));
+    }
+
+    function loginSuccess(user, userToken) {
+      token = userToken;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      // Header display
+      document.getElementById('userAvatar').innerText = user.name.charAt(0);
+      document.getElementById('navUserName').innerText = user.name;
+      document.getElementById('navUserEmail').innerText = `(${user.email})`;
+      document.getElementById('userBadge').style.display = 'flex';
+      document.getElementById('navSignOutBtn').style.display = 'inline-flex';
+
+      // Switch panels
+      document.getElementById('authPanel').style.display = 'none';
+      document.getElementById('workspacePanel').style.display = 'flex';
+
+      loadTasks();
+    }
+
+    function logout() {
+      token = '';
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      document.getElementById('userBadge').style.display = 'none';
+      document.getElementById('navSignOutBtn').style.display = 'none';
+      document.getElementById('authPanel').style.display = 'block';
+      document.getElementById('workspacePanel').style.display = 'none';
+    }
+
+    // ─── Priority Selector ───
+    function setFormPriority(level) {
+      formPriority = level;
+      const btns = document.querySelectorAll('.priority-btn');
+      btns.forEach(b => {
+        b.classList.remove('active-urgent', 'active-high', 'active-medium', 'active-low');
+      });
+      const target = event.currentTarget;
+      target.classList.add(`active-${level.toLowerCase()}`);
+    }
+
+    // ─── Task Data & Rendering ───
+    function setFilterStatus(status) {
+      currentFilter = status;
+      document.getElementById('filterTabAll').classList.toggle('active', status === 'ALL');
+      document.getElementById('filterTabPending').classList.toggle('active', status === 'PENDING');
+      document.getElementById('filterTabCompleted').classList.toggle('active', status === 'COMPLETED');
+      loadTasks();
+    }
+
+    function handleSortChange(sort) {
+      currentSort = sort;
+      loadTasks();
+    }
+
+    function switchWorkspaceView(view) {
+      const isCreate = view === 'create';
+      const createBtn = document.getElementById('wsTabCreate');
+      const feedBtn = document.getElementById('wsTabFeed');
+      if (createBtn) createBtn.classList.toggle('active', isCreate);
+      if (feedBtn) feedBtn.classList.toggle('active', !isCreate);
+
+      const composer = document.getElementById('composerPanel');
+      const feed = document.getElementById('feedPanel');
+
+      if (window.innerWidth <= 860) {
+        if (isCreate) {
+          if (composer) composer.style.display = 'block';
+          if (feed) feed.style.display = 'none';
+          const titleInput = document.getElementById('newTaskTitle');
+          if (titleInput) titleInput.focus();
+        } else {
+          if (composer) composer.style.display = 'none';
+          if (feed) feed.style.display = 'block';
+        }
+      } else {
+        if (composer) composer.style.display = 'block';
+        if (feed) feed.style.display = 'block';
+        if (isCreate) {
+          const titleInput = document.getElementById('newTaskTitle');
+          if (titleInput) titleInput.focus();
+          if (composer) composer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          if (feed) feed.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+    }
+
+    async function loadTasks() {
+      if (!token) return;
+      try {
+        let url = `/api/tasks?sortBy=${currentSort}`;
+        if (currentFilter !== 'ALL') {
+          url += `&status=${currentFilter}`;
+        }
+        const res = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          // Update stats
+          document.getElementById('statTotal').innerText = data.stats.total;
+          document.getElementById('statCompleted').innerText = data.stats.completed;
+          document.getElementById('statPending').innerText = data.stats.pending;
+          document.getElementById('statUrgent').innerText = data.stats.urgent + data.stats.overdue;
+
+          const countBadge = document.getElementById('wsTaskCountBadge');
+          if (countBadge) {
+            countBadge.innerText = `${data.stats.total} task${data.stats.total === 1 ? '' : 's'}`;
+          }
+
+          renderTasks(data.tasks);
+        }
+      } catch (e) {
+        console.error('Failed to load tasks', e);
+      }
+    }
+
+    function renderTasks(tasks) {
+      const container = document.getElementById('taskListContainer');
+      if (!tasks.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <div class="empty-title">All tasks cleared</div>
+            <div class="empty-desc">No tasks in this view. Use the form on the left to schedule new work.</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = tasks.map(task => {
+        const isDone = task.status === 'COMPLETED';
+        const priorityClass = `pill-${task.priority.toLowerCase()}`;
+
+        // Deadline status format
+        let deadlineMarkup = '';
+        if (task.deadline) {
+          const dTime = new Date(task.deadline).getTime();
+          const diffHours = (dTime - Date.now()) / (1000 * 60 * 60);
+          if (!isDone && diffHours < 0) {
+            deadlineMarkup = `<span class="pill-badge pill-deadline overdue">Overdue</span>`;
+          } else if (!isDone && diffHours <= 24) {
+            const h = Math.max(1, Math.round(diffHours));
+            deadlineMarkup = `<span class="pill-badge pill-deadline overdue">Due in ${h}h</span>`;
+          } else {
+            const dateStr = new Date(task.deadline).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+            deadlineMarkup = `<span class="pill-badge pill-deadline">Due ${dateStr}</span>`;
+          }
+        }
+
+        return `
+          <div class="task-card ${isDone ? 'completed' : ''}">
+            <div class="check-circle ${isDone ? 'checked' : ''}" onclick="toggleTaskStatus('${task._id}')">
+              <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+
+            <div class="task-main">
+              <div class="task-title ${isDone ? 'strikethrough' : ''}">${escapeHtml(task.title)}</div>
+              ${task.description ? `<div class="task-desc">${escapeHtml(task.description)}</div>` : ''}
+
+              <div class="task-meta">
+                <span class="pill-badge ${priorityClass}">
+                  <span class="dot"></span>${task.priority}
+                </span>
+                ${deadlineMarkup}
+                <span class="pill-badge pill-category">${escapeHtml(task.category || 'General')}</span>
+              </div>
+            </div>
+
+            <button class="delete-action" title="Delete Task" onclick="deleteTaskItem('${task._id}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ─── Create Task ───
+    async function handleCreateTask(e) {
+      e.preventDefault();
+      if (!token) return alert('Session expired, please sign in.');
+
+      const title = document.getElementById('newTaskTitle').value.trim();
+      const description = document.getElementById('newTaskDesc').value.trim();
+      const category = document.getElementById('newTaskCategory').value;
+      const deadlineVal = document.getElementById('newTaskDeadline').value;
+
+      try {
+        const res = await fetch('/api/tasks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            title,
+            description,
+            priority: formPriority,
+            category,
+            deadline: deadlineVal ? new Date(deadlineVal).toISOString() : undefined
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('newTaskTitle').value = '';
+          document.getElementById('newTaskDesc').value = '';
+          document.getElementById('newTaskDeadline').value = '';
+          loadTasks();
+          if (window.innerWidth <= 860) {
+            switchWorkspaceView('feed');
+          }
+        } else {
+          alert(data.message || 'Failed to create task');
+        }
+      } catch (err) {
+        alert('Failed to connect to server');
+      }
+    }
+
+    // ─── Toggle Status ───
+    async function toggleTaskStatus(id) {
+      try {
+        await fetch(`/api/tasks/${id}/toggle`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        loadTasks();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // ─── Delete Task ───
+    async function deleteTaskItem(id) {
+      if (!confirm('Permanently delete this task?')) return;
+      try {
+        await fetch(`/api/tasks/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        loadTasks();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Auto restore session
+    const savedUser = localStorage.getItem('user');
+    if (token && savedUser) {
+      try {
+        loginSuccess(JSON.parse(savedUser), token);
+      } catch (e) {
+        logout();
+      }
+    }
+  </script>
+</body>
+</html>

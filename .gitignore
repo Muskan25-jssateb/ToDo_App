@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+mobile/node_modules/
+backend/node_modules/
+
+# Local JDK & scripts
+jdk17/
+setup_jdk17.ps1
+
+# Android build outputs
+mobile/android/.gradle/
+mobile/android/app/build/
+mobile/android/build/
+mobile/android/.idea/
+mobile/android/*.iml
+mobile/android/app/*.iml
+mobile/android/local.properties
+
+# Metro and temporary files
+.metro/
+*.bundle
+*.log
+
+# Environment variables & secrets
+backend/.env
+.env
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Big binaries (APK files can be hosted on Drive/GitHub Releases)
+*.apk
