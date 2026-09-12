@@ -1,18 +1,45 @@
-# 🚀 TaskFlow: React Native Full-Stack To-Do App with Authentication & Smart Sorting
+# 🚀 TaskFlow: Full-Stack React Native Android Task Management Ecosystem
 
-A production-ready Android To-Do application built with **React Native CLI (TypeScript)**, **Redux Toolkit (RTK)**, and a modular **Node.js + Express (TypeScript) + MongoDB** backend with JWT authentication and an intelligent Priority-Deadline sorting engine.
+A production-ready Android To-Do application built with **React Native CLI (TypeScript)**, **Redux Toolkit (RTK)**, and a modular **Node.js + Express (TypeScript) + MongoDB** backend with JWT authentication, custom in-app calendar scheduling, and an intelligent Priority-Deadline sorting engine.
+
+---
+
+## 🔗 Quick Links & Downloads
+
+| Resource | Link |
+| :--- | :--- |
+| 📱 **Download Android APK** | [Google Drive APK Link](https://drive.google.com/file/d/1J2MiSYSUc4i3jdH_4bT7sra5TskdWkvK/view?usp=drive_link) |
+| 🎥 **Watch App Demo Video** | [Google Drive Video Link](https://drive.google.com/file/d/1yAdIgVEwGc47WVB3bsVmAnfs41R3vawN/view?usp=drive_link) |
+| 💻 **GitHub Repository** | [https://github.com/Muskan25-jssateb/ToDo_App](https://github.com/Muskan25-jssateb/ToDo_App) |
+| ⚡ **Tech Stack** | React Native (TS) • Node.js / Express • MongoDB • Redux Toolkit |
+
+---
+
+## 📱 App Screenshots
+
+| 🔐 Authentication & Security | 📋 Smart Dashboard & Filters |
+| :---: | :---: |
+| <img src="Screenshots/login.jpeg" width="300" alt="Login & Security Screen" /> | <img src="Screenshots/Homescreen.jpeg" width="300" alt="Task Dashboard & Filters" /> |
+| *Strict validation for unregistered emails & incorrect passwords* | *Electric Indigo filter tabs, Smart Mix sort, & daily progress* |
+
+| 📅 Task Creation & Calendar Picker | ⏱️ Task Details & Focus Timer |
+| :---: | :---: |
+| <img src="Screenshots/add_task_screen.jpeg" width="300" alt="Task Creation Modal" /> | <img src="Screenshots/task_details.jpeg" width="300" alt="Task Details & Pomodoro" /> |
+| *Custom in-app monthly calendar, time stepper & subtask builder* | *25-min Pomodoro timer, 1-tap snooze, & checklist tracking* |
 
 ---
 
 ## 🌟 Key Highlights & Assignment Features
 
-### 1. User Authentication
-- **Registration & Login**: Secure account creation with email & password validation.
+### 1. User Authentication & Credential Security
+- **Strict Validation**: Unregistered email addresses are rejected with clear feedback (`"Account not found. Please create an account first"`). Incorrect passwords for existing users are rejected with (`"Invalid password"`).
+- **Per-User Isolation**: Cached task storage is explicitly scoped to individual user IDs (`@todo_app_cached_tasks_${userId}`). Newly created accounts start with a clean, empty dashboard.
 - **Security**: Passwords salted and hashed with `bcryptjs` (cost factor 10); JWT access tokens stored securely in `AsyncStorage`.
 - **Protected Routing**: Axios interceptors dynamically inject `Authorization: Bearer <token>` into all task requests. Automatic session restoration on app launch.
 
 ### 2. Task Management CRUD
 - **Comprehensive Fields**: Task title, detailed description, scheduled date/time, cutoff deadline, priority level (`LOW`, `MEDIUM`, `HIGH`, `URGENT`), status (`PENDING`, `COMPLETED`), subtasks checklist, and categories/tags.
+- **Pure React Native Calendar & Time Picker**: In-app custom modal with month navigation and time steppers, eliminating crashes associated with third-party native dialog fragments.
 - **Atomic Status Toggling**: Checkbox interaction updates status instantly with strike-through animations.
 - **Task Deletion & Editing**: Modal edit workflow and confirmation alerts for deletions.
 
@@ -28,7 +55,7 @@ $$\text{UrgencyScore} = (W_{\text{priority}} \times P) + \text{DeadlinePenalty} 
 - **Anti-Starvation Age Factor**: Older pending tasks slowly accumulate points so low-priority tasks don't get neglected indefinitely.
 - **Completed Tasks**: Automatically sink to the bottom with negative scores.
 
-### 4. 🌟 Creative & High-Impact Bonus Features (Assessment Highlights)
+### 4. 🌟 Creative & High-Impact Bonus Features
 1. **🧠 Smart Natural Language Quick-Add (NLP Parser)**:
    - Type commands like `"Submit assignment tomorrow 5pm #study !urgent"`.
    - Automatically extracts task title, scheduled deadline, category, and priority level with live preview pills.
@@ -67,14 +94,14 @@ TODO/
 │
 └── mobile/                       # React Native CLI (TypeScript)
     ├── src/
-    │   ├── api/                  # Axios client & services (authApi, taskApi)
-    │   ├── components/           # TaskCard, PriorityBadge, StatCard, FilterPill, CustomInput, CustomButton
+    │   ├── api/                  # Axios client & multi-endpoint fallback service
+    │   ├── components/           # TaskCard, DateTimePickerModal, FocusTimerModal, FilterPill, CustomInput, CustomButton
     │   ├── navigation/           # AppNavigator, AuthNavigator, MainNavigator
     │   ├── screens/              # LoginScreen, RegisterScreen, HomeScreen, AddEditTaskModal, TaskDetailScreen
     │   ├── store/                # Redux Toolkit (authSlice, taskSlice)
-    │   ├── theme/                # Colors, Typography design tokens
+    │   ├── theme/                # Colors (Electric Indigo), Typography design tokens
     │   ├── types/                # Complete TypeScript definitions
-    │   └── utils/                # dateUtils.ts, smartSorting.ts
+    │   └── utils/                # dateUtils.ts, smartSorting.ts, nlpParser.ts
     ├── App.tsx
     ├── index.js
     ├── tsconfig.json
@@ -106,26 +133,18 @@ npm run dev
 ```env
 PORT=5000
 MONGODB_URI=mongodb://127.0.0.1:27017/todo-app
-# Or Atlas: MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/todo-app?retryWrites=true&w=majority
 JWT_SECRET=super_secure_jwt_secret_key_change_in_production_987654321
 JWT_EXPIRES_IN=7d
 ```
 
 ---
 
-### Step 2: Start the React Native App
+### Step 2: Run the React Native App
 
 ```bash
 cd mobile
 npm install --legacy-peer-deps
-```
 
-#### Android Emulator / Device Networking:
-- If running on an **Android Emulator**: The app is pre-configured to reach the backend at `http://10.0.2.2:5000/api` (standard Android emulator loopback).
-- If running on a **Physical Device**: Open `mobile/src/api/client.ts` and set `DEFAULT_API_URL` to your local machine's IP (e.g. `http://192.168.1.50:5000/api`).
-
-#### Run on Android:
-```bash
 # Start Metro bundler:
 npm start
 
